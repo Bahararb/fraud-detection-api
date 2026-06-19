@@ -11,9 +11,6 @@ API_KEY = "fraud123"
 model = None
 
 
-# -------------------------
-# Load model at startup
-# -------------------------
 @app.on_event("startup")
 def load_model():
     global model
@@ -24,9 +21,7 @@ def load_model():
     model = joblib.load(model_path)
 
 
-# -------------------------
-# Input schema (Swagger fields)
-# -------------------------
+
 class Transaction(BaseModel):
     Time: float
     V1: float
@@ -60,17 +55,12 @@ class Transaction(BaseModel):
     Amount: float
 
 
-# -------------------------
-# Root endpoint
-# -------------------------
+
 @app.get("/")
 def home():
     return {"message": "Fraud Detection API is running"}
 
 
-# -------------------------
-# PREDICTION ENDPOINT (FIXED)
-# -------------------------
 @app.post("/predict")
 def predict(data: Transaction, x_api_key: str = Header(None)):
 
@@ -79,7 +69,7 @@ def predict(data: Transaction, x_api_key: str = Header(None)):
         raise HTTPException(status_code=403, detail="Invalid API Key")
 
     try:
-        # IMPORTANT FIX: use DataFrame (not numpy array)
+    
         input_data = pd.DataFrame([{
             "Time": data.Time,
             "V1": data.V1,
@@ -116,7 +106,6 @@ def predict(data: Transaction, x_api_key: str = Header(None)):
         # prediction
         prediction = model.predict(input_data)[0]
 
-        # probability (if supported)
         probability = None
         if hasattr(model, "predict_proba"):
             probability = model.predict_proba(input_data)[0][1]
