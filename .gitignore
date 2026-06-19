@@ -1,6 +1,9 @@
 # Ignore dataset
 data/
 *.csv
+__pycache__/
+*.pyc
+
 
 # Ignore Elastic Beanstalk files
 .elasticbeanstalk/*
