@@ -35,11 +35,7 @@ jobs:
           from app.main import app
           print("FastAPI app loaded:", app.title)
           PY
-
-      - name: Build Docker image
-        run: |
-          docker build -t fraud-api .
-
+s
   deploy:
     needs: test
     runs-on: ubuntu-latest
