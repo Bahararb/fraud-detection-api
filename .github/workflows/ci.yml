@@ -55,14 +55,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Initialize Elastic Beanstalk
+      - name: Use existing Elastic Beanstalk config
         run: |
-          mkdir -p .elasticbeanstalk
-          eb init fraud-app \
-            --region us-east-1 \
-            --platform docker
+          test -f .elasticbeanstalk/config.yml
+          eb use fraud-env
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb use fraud-env
-          eb deploy --staged --label github-actions-${GITHUB_SHA::7}
+          eb deploy
