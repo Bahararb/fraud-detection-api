@@ -5,9 +5,10 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,17 +35,31 @@ jobs:
           from app.main import app
           print("FastAPI app loaded:", app.title)
           PY
+
+      - name: Build Docker image
+        run: |
+          docker build -t fraud-api .
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install AWS Elastic Beanstalk CLI
         run: |
-          pip install awsebcli
+          python -m pip install awsebcli
 
-      - name: login to AWS
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Build Docker image
+      - name: Deploy to AWS Elastic Beanstalk
         run: |
           eb deploy fraud-env
