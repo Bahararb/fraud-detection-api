@@ -57,7 +57,6 @@ jobs:
 
       - name: Use existing Elastic Beanstalk config
         run: |
-          test -f .elasticbeanstalk/config.yml
           eb use fraud-env
 
       - name: Deploy to AWS Elastic Beanstalk
