@@ -60,8 +60,7 @@ jobs:
           mkdir -p .elasticbeanstalk
           eb init fraud-app \
             --region us-east-1 \
-            --platform docker \
-            --interactive false
+            --platform docker
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
