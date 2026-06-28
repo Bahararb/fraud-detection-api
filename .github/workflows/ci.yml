@@ -65,4 +65,4 @@ jobs:
       - name: Deploy to AWS Elastic Beanstalk
         run: |
           eb use fraud-env
-          eb deploy --staged
+          eb deploy --staged --label github-actions-${GITHUB_SHA::7}
