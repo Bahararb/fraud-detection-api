@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import joblib
 import numpy as np
@@ -6,6 +8,9 @@ import pandas as pd
 import os
 
 app = FastAPI(title="Fraud Detection API")
+
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+app.mount("/static", StaticFiles(directory=os.path.join(base_dir, "app", "static")), name="static")
 
 # API KEY 
 API_KEY = "fraud123"
@@ -61,7 +66,7 @@ class Transaction(BaseModel):
 
 @app.get("/")
 def home():
-    return {"message": "Fraud Detection API is running"}
+    return FileResponse(os.path.join(base_dir, "app", "static", "index.html"))
 
 
 
